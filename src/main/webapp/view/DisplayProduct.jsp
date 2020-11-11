@@ -17,16 +17,18 @@
 <div class="container">
     <div class="row">
         <div class="col-2">
-            <button type="button" class="btn btn-primary"><a href="/product?action=createProduct">Add New Product</a></button>
+            <button type="button" class="btn btn-secondary"><a href="/product?action=createProduct">Add New Product</a></button>
         </div>
         <div class="col-6">
-
+            <div class="col-2">
+                <button type="button" class="btn btn-secondary"><a href="/product">Home</a></button>
+            </div>
         </div>
         <div class="col-4">
-            <form class="form-inline">
-                <label class="sr-only" for="inlineFormInputName2">Name</label>
-                <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Jane Doe">
-                <button type="submit" class="btn btn-primary mb-2">Submit</button>
+            <form class="form-inline" action="/product?action=searchProduct" method="post">
+                <label class="sr-only" for="productName">Product Name</label>
+                <input type="text" class="form-control mb-2 mr-sm-2" id="productName" name="productName" placeholder="Enter product name...">
+                <button type="submit" class="btn btn-primary mb-2">Search</button>
             </form>
         </div>
     </div>

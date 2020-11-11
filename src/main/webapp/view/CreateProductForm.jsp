@@ -17,7 +17,7 @@
 <div class="container">
     <div class="row">
         <div class="col-3">
-            <button type="button" class="btn btn-primary">Back To Main Menu</button>
+            <button type="button" class="btn btn-secondary"><a href="/product">Home</a></button>
         </div>
         <div class="col-10">
         </div>

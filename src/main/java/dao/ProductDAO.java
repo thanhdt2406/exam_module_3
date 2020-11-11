@@ -56,12 +56,38 @@ public class ProductDAO implements IProductDAO {
     }
 
     @Override
-    public boolean editProduct(Product newProduct) {
+    public boolean editProduct(int productID, String productName, int price, String color, String description, int categoryID, int amount) {
+        Connection connection = ConnectDB.getConnect();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("update product set productName = ?, price = ?, color=?,description=?,categoryID=?,amount=? where productID=?;");
+            preparedStatement.setString(1, productName);
+            preparedStatement.setInt(2, price);
+            preparedStatement.setString(3, color);
+            preparedStatement.setString(4, description);
+            preparedStatement.setInt(5, categoryID);
+            preparedStatement.setInt(6, amount);
+            preparedStatement.setInt(7, productID);
+            if (preparedStatement.executeUpdate() != 0) {
+                return true;
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
         return false;
     }
 
     @Override
     public boolean deleteProduct(int productID) {
+        Connection connection = ConnectDB.getConnect();
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement("delete from product where productID =?;");
+            preparedStatement.setInt(1,productID);
+            if(preparedStatement.executeUpdate()!=0){
+                return true;
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
         return false;
     }
 
@@ -88,5 +114,30 @@ public class ProductDAO implements IProductDAO {
             exception.printStackTrace();
         }
         return product;
+    }
+
+    @Override
+    public List<Product> getProductByName(String productName) {
+        Connection connection = ConnectDB.getConnect();
+        List<Product> products = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from product where productName = ?;");
+            preparedStatement.setString(1,productName);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int productID = rs.getInt("productID");
+                int price = rs.getInt("price");
+                int amount = rs.getInt("amount");
+                String color = rs.getString("color");
+                String description = rs.getString("description");
+                int categoryID = rs.getInt("categoryID");
+                ICategoryDAO categoryDAO = new CategoryDAO();
+                Category category = categoryDAO.getCategoryByID(categoryID);
+                products.add(new Product(productID, productName, price, amount, color, description, category));
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return products;
     }
 }

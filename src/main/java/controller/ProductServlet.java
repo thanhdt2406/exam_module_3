@@ -25,11 +25,11 @@ public class ProductServlet extends HttpServlet {
                 break;
             case "editProduct":
                 editProduct(request,response);
+                break;
+            case "searchProduct":
+                searchProduct(request,response);
+                break;
         }
-    }
-
-    private void editProduct(HttpServletRequest request, HttpServletResponse response) {
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -45,10 +45,29 @@ public class ProductServlet extends HttpServlet {
                 break;
             case "editProduct":
                 getEditProduct(request,response);
+                break;
+            case "deleteProduct":
+                deleteProduct(request,response);
+                break;
             default:
                 displayAllProduct(request,response);
                 break;
         }
+    }
+
+    private void searchProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String productName = request.getParameter("productName");
+        IProductDAO productDAO = new ProductDAO();
+        request.setAttribute("list",productDAO.getProductByName(productName));
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("view/DisplayProduct.jsp");
+        requestDispatcher.forward(request,response);
+    }
+
+    private void deleteProduct(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        IProductDAO productDAO = new ProductDAO();
+        int productID = Integer.parseInt(request.getParameter("productID"));
+        productDAO.deleteProduct(productID);
+        displayAllProduct(request,response);
     }
 
     private void getEditProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -76,5 +95,18 @@ public class ProductServlet extends HttpServlet {
         request.setAttribute("list",productDAO.getAllProduct());
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("view/DisplayProduct.jsp");
         requestDispatcher.forward(request,response);
+    }
+
+    private void editProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        IProductDAO productDAO = new ProductDAO();
+        int productID = Integer.parseInt(request.getParameter("productID"));
+        String productName = request.getParameter("productName");
+        int price = Integer.parseInt(request.getParameter("price"));
+        int amount = Integer.parseInt(request.getParameter("amount"));
+        String color = request.getParameter("color");
+        String description = request.getParameter("description");
+        int categoryID = Integer.parseInt(request.getParameter("categoryID"));
+        productDAO.editProduct(productID,productName,price,color,description,categoryID,amount);
+        response.sendRedirect("/product");
     }
 }

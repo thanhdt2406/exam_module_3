@@ -9,9 +9,12 @@ public interface IProductDAO {
 
     List<Product> getAllProduct();
 
-    boolean editProduct(Product newProduct);
+    boolean editProduct(int productID, String productName, int price, String color, String description, int categoryID, int amount);
 
     boolean deleteProduct(int productID);
 
     Product getProductByID(int productID);
+
+    List<Product> getProductByName(String productName);
+
 }
