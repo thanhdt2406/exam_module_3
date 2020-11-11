@@ -120,20 +120,22 @@ public class ProductDAO implements IProductDAO {
     public List<Product> getProductByName(String productName) {
         Connection connection = ConnectDB.getConnect();
         List<Product> products = new ArrayList<>();
+        productName = "%"+productName+"%";
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("select * from product where productName = ?;");
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from product where productName like ?;");
             preparedStatement.setString(1,productName);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 int productID = rs.getInt("productID");
                 int price = rs.getInt("price");
+                String name = rs.getString("productName");
                 int amount = rs.getInt("amount");
                 String color = rs.getString("color");
                 String description = rs.getString("description");
                 int categoryID = rs.getInt("categoryID");
                 ICategoryDAO categoryDAO = new CategoryDAO();
                 Category category = categoryDAO.getCategoryByID(categoryID);
-                products.add(new Product(productID, productName, price, amount, color, description, category));
+                products.add(new Product(productID, name, price, amount, color, description, category));
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
